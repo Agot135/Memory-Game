@@ -2,7 +2,7 @@ package com.kd.memorygame;
 
 public class MemoryGameMain {
 
-	public static void main(String[] args) {
+	public static void main(String[] args){
 		
 		
 		MemoryGame game = new MemoryGame();
@@ -10,8 +10,7 @@ public class MemoryGameMain {
 		
 		game.newMemoryGame();
 		
-		System.out.println(game.getArrayA().toString());
-		System.out.println(game.getArrayB().toString());
+		
 
 	}
 
