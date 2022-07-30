@@ -1,6 +1,5 @@
 package com.kd.memorygame;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -26,15 +25,12 @@ public class MemoryGame {
 	private int tempCoordinateB;
 
 	public MemoryGame() {
-		System.out.println("Welcome to Memory Game");
+
 	}
 
-	public void newMemoryGame() {
+	public boolean newMemoryGame(String difficulty) {
 		
-		chancesLeft = 10;
-		totalItems = 4;
-
-		chooseDifficulty();
+		chooseDifficulty(difficulty);
 
 		CreateWordArray newWordArray = new CreateWordArray(totalItems);
 
@@ -47,25 +43,31 @@ public class MemoryGame {
 		setHiddenArrays(arrayA);
 		hiddenString = hiddenArrayA.get(0);
 		setCoordinateArray(arrayA);
+		
 
-//		System.out.println(arrayA.toString());
-//		System.out.println(arrayB.toString());
-//		
-//		printArrays();
-//		
-//		flipWord(hiddenArrayA, arrayA, 3);
-//		
-//		printArrays();
-//		
 		masterPlay();
+
+		arrayA.clear();
+		arrayB.clear();
+		hiddenArrayA.clear();
+		hiddenArrayB.clear();
+		coordinateArray.clear();
+		usedCoordinatesA.clear();
+		usedCoordinatesB.clear();
+		
+		System.out.println("Restart (r) or return to Main Menu (press Enter)");
+	
+		Scanner scanner = new Scanner(System.in);
+		if(scanner.nextLine() == "r") {
+			return true;
+		}else {	
+		return false;
+		}
 	}
 
-	public void chooseDifficulty() {
+	private void chooseDifficulty(String difficulty) {
 
-		Scanner scanner = new Scanner(System.in);
-		System.out.println("Choose difficulty: easy/hard");
-		System.out.println("Default: easy");
-		String difficulty = scanner.nextLine();
+
 
 		switch (difficulty) {
 
@@ -121,7 +123,7 @@ public class MemoryGame {
 	private void printArrays() {
 		System.out.print("   ");
 		System.out.println(coordinateArray.toString());
-		
+
 		System.out.print(" A ");
 		System.out.println(hiddenArrayA.toString());
 		System.out.println("");
@@ -161,7 +163,7 @@ public class MemoryGame {
 	}
 
 	private boolean playFirst() {
-		
+
 		boolean keepGoing = true;
 		System.out.println("Chances left " + chancesLeft);
 		printArrays();
@@ -170,7 +172,7 @@ public class MemoryGame {
 			keepGoing = readCoordinates();
 		}
 		if (alphabeticalCoordinate.equals("A")) {
-			if(usedCoordinatesA.contains(numericalCoordinate)) {
+			if (usedCoordinatesA.contains(numericalCoordinate)) {
 				System.out.println("Word already revealed, try again");
 				return true;
 			}
@@ -178,7 +180,7 @@ public class MemoryGame {
 			flipWord(hiddenArrayA, arrayA, numericalCoordinate);
 		}
 		if (alphabeticalCoordinate.equals("B")) {
-			if(usedCoordinatesB.contains(numericalCoordinate)) {
+			if (usedCoordinatesB.contains(numericalCoordinate)) {
 				System.out.println("Word already revealed, try again");
 				return true;
 			}
@@ -188,10 +190,10 @@ public class MemoryGame {
 		alphabeticalCoordinateUsed = alphabeticalCoordinate;
 		return false;
 	}
-		
+
 	private boolean playSecond() {
 		boolean keepGoing = true;
-		
+
 		printArrays();
 
 		System.out.println("Choose second word");
@@ -204,7 +206,7 @@ public class MemoryGame {
 			}
 		}
 		if (alphabeticalCoordinate.equals("A")) {
-			if(usedCoordinatesA.contains(numericalCoordinate)) {
+			if (usedCoordinatesA.contains(numericalCoordinate)) {
 				System.out.println("Word already revealed, try again");
 				return true;
 			}
@@ -212,7 +214,7 @@ public class MemoryGame {
 			flipWord(hiddenArrayA, arrayA, numericalCoordinate);
 		}
 		if (alphabeticalCoordinate.equals("B")) {
-			if(usedCoordinatesB.contains(numericalCoordinate)) {
+			if (usedCoordinatesB.contains(numericalCoordinate)) {
 				System.out.println("Word already revealed, try again");
 				return true;
 			}
@@ -220,14 +222,14 @@ public class MemoryGame {
 			flipWord(hiddenArrayB, arrayB, numericalCoordinate);
 		}
 		alphabeticalCoordinateUsed = null;
-		
+
 		printArrays();
 		if (compareWords(arrayA, tempCoordinateA, arrayB, tempCoordinateB)) {
-			//System.out.println("Good job");
+			// System.out.println("Good job");
 			usedCoordinatesA.add(tempCoordinateA);
 			usedCoordinatesB.add(tempCoordinateB);
 		} else {
-			//System.out.println("Try again");
+			// System.out.println("Try again");
 			chancesLeft--;
 			try {
 				TimeUnit.SECONDS.sleep(1);
@@ -239,11 +241,12 @@ public class MemoryGame {
 		}
 		return false;
 	}
-	
-	
+
 	private void masterPlay() {
 		boolean win = false;
-		
+
+		long startTime = System.nanoTime();
+
 		while (chancesLeft > 0) {
 			spamConsole();
 			boolean keepGoing = true;
@@ -255,9 +258,13 @@ public class MemoryGame {
 				keepGoing = playSecond();
 			}
 
+			long endTime = System.nanoTime();
+			long timeElapsed = endTime - startTime;
+
 			if (usedCoordinatesA.size() == arrayA.size()) {
 				System.out.println("Congratulations!");
 				System.out.println("You have finished the game with " + chancesLeft + " chances left");
+				System.out.println("Completion time: " + (timeElapsed/1000000000));
 				win = true;
 				break;
 			}
@@ -265,16 +272,14 @@ public class MemoryGame {
 		if (!win) {
 			System.out.println("Better luck next time");
 		}
+
 	}
-	
-	
+
 	private void spamConsole() {
-		for(int i = 0; i <=15 ; i++) {
+		for (int i = 0; i <= 15; i++) {
 			System.out.println("");
 		}
-//		System.out.println("Used coordinates A " + usedCoordinatesA.toString());
-//		System.out.println("Used coordinates B " + usedCoordinatesB.toString());
+
 	}
-	
 
 }

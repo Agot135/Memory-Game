@@ -2,15 +2,11 @@ package com.kd.memorygame;
 
 public class MemoryGameMain {
 
-	public static void main(String[] args){
-		
-		
-		MemoryGame game = new MemoryGame();
-		
-		
-		game.newMemoryGame();
-		
-		
+	public static void main(String[] args) {
+
+		MainMenu menu = new MainMenu();
+
+		menu.startMainMenu();
 
 	}
 
