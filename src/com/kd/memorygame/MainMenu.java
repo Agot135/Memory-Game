@@ -8,8 +8,12 @@ public class MainMenu {
 	String difficulty = "easy";
 
 	public MainMenu() {
-		System.out.println("Welcome to Memory Game");
-		System.out.println("");
+		
+	PrintArt art = new PrintArt();
+	art.printArt();
+
+	System.out.println("");
+	System.out.println("Welcome to Memory Game!");
 
 	}
 
@@ -17,11 +21,12 @@ public class MainMenu {
 
 		Scanner scanner = new Scanner(System.in);
 
+		System.out.println("");
 		System.out.println("Choose action:");
 		System.out.println("");
 		System.out.println("New game (ng)");
 		System.out.println("");
-		System.out.println("Difficulty settings (ds) Default: Easy");
+		System.out.println("Difficulty settings (ds) Current: " + difficulty);
 		System.out.println("");
 		System.out.println("High Scores (hs)");
 		System.out.println("");
@@ -33,7 +38,10 @@ public class MainMenu {
 			do {
 				doContinue = memoryGame.newMemoryGame(difficulty);
 			} while (doContinue);
-			startMainMenu();
+			if(!doContinue) {
+				startMainMenu();
+			}
+			
 			break;
 
 		case "ds":
@@ -70,7 +78,19 @@ public class MainMenu {
 	}
 
 	public void highScores() {
-		System.out.println("*Coming soon*");
+		
+		
+		
+		HighScores easy = new HighScores(false);
+		HighScores hard = new HighScores(true);
+		HighScoresIO hsIOEasy = new HighScoresIO(false);
+		HighScoresIO hsIOHard = new HighScoresIO(true);
+		easy = hsIOEasy.importScores();
+		hard = hsIOHard.importScores();
+		System.out.println("High scores (easy):");
+		easy.printScores();
+		System.out.println("High scores (hard):");
+		hard.printScores();
 
 	}
 	

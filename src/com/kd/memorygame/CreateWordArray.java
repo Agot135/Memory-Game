@@ -43,7 +43,7 @@ public class CreateWordArray {
 	private void readFile() {
 
 		FileReader fr = null;
-		String linia = "";
+		String line = "";
 
 		try {
 			fr = new FileReader("resources/Words.txt");
@@ -55,8 +55,8 @@ public class CreateWordArray {
 		BufferedReader bfr = new BufferedReader(fr);
 
 		try {
-			while ((linia = bfr.readLine()) != null) {
-				allWords.add(linia);
+			while ((line = bfr.readLine()) != null) {
+				allWords.add(line);
 			}
 		} catch (IOException e) {
 			System.out.println("Error during file reading");

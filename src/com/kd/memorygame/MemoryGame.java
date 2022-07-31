@@ -18,6 +18,7 @@ public class MemoryGame {
 	String coordinates;
 	String alphabeticalCoordinate;
 	String alphabeticalCoordinateUsed;
+	boolean isHard;
 	int numericalCoordinate;
 	private List<Integer> usedCoordinatesA = new ArrayList<Integer>();
 	private List<Integer> usedCoordinatesB = new ArrayList<Integer>();
@@ -29,6 +30,7 @@ public class MemoryGame {
 	}
 
 	public boolean newMemoryGame(String difficulty) {
+		
 		
 		chooseDifficulty(difficulty);
 
@@ -58,11 +60,22 @@ public class MemoryGame {
 		System.out.println("Restart (r) or return to Main Menu (press Enter)");
 	
 		Scanner scanner = new Scanner(System.in);
-		if(scanner.nextLine() == "r") {
+//		String restart = scanner.nextLine();
+//		if(restart == "r") {
+//			System.out.println("Restarting");
+//			return true;
+//		}else {	
+//		return false;
+//		}
+		
+		switch (scanner.nextLine()) {
+		case "r":
+			System.out.println("Restarting");
 			return true;
-		}else {	
-		return false;
+		default:
+			return false;
 		}
+	
 	}
 
 	private void chooseDifficulty(String difficulty) {
@@ -74,10 +87,12 @@ public class MemoryGame {
 		case "easy":
 			totalItems = 4;
 			chancesLeft = 10;
+			this.isHard = false;
 			break;
 		case "hard":
 			totalItems = 8;
 			chancesLeft = 15;
+			this.isHard = true;
 			break;
 		default:
 			System.out.println("Incorrect difficulty");
@@ -145,15 +160,20 @@ public class MemoryGame {
 
 	private boolean readCoordinates() {
 
-		Scanner scanner = new Scanner(System.in);
-		coordinates = scanner.nextLine();
-		alphabeticalCoordinate = coordinates.substring(0, 1);
-		numericalCoordinate = Integer.parseInt(coordinates.substring(1));
-		if (!(alphabeticalCoordinate.equals("A")) && !(alphabeticalCoordinate.equals("B"))) {
-			System.out.println("Incorrect coordinates, try again");
-			return true;
-		}
-		if (numericalCoordinate > arrayA.size() || numericalCoordinate <= 0) {
+		try {
+			Scanner scanner = new Scanner(System.in);
+			coordinates = scanner.nextLine();
+			alphabeticalCoordinate = coordinates.substring(0, 1);
+			numericalCoordinate = Integer.parseInt(coordinates.substring(1));
+			if (!(alphabeticalCoordinate.equals("A")) && !(alphabeticalCoordinate.equals("B"))) {
+				System.out.println("Incorrect coordinates, try again");
+				return true;
+			}
+			if (numericalCoordinate > arrayA.size() || numericalCoordinate <= 0) {
+				System.out.println("Incorrect coordinates, try again");
+				return true;
+			}
+		} catch (NumberFormatException e) {
 			System.out.println("Incorrect coordinates, try again");
 			return true;
 		}
@@ -244,6 +264,14 @@ public class MemoryGame {
 
 	private void masterPlay() {
 		boolean win = false;
+		HighScores easy = new HighScores(false);
+		HighScores hard = new HighScores(true);
+		HighScoresIO hsIOEasy = new HighScoresIO(false);
+		HighScoresIO hsIOHard = new HighScoresIO(true);
+		
+		easy = hsIOEasy.importScores();
+		hard = hsIOHard.importScores();
+		
 
 		long startTime = System.nanoTime();
 
@@ -266,17 +294,39 @@ public class MemoryGame {
 				System.out.println("You have finished the game with " + chancesLeft + " chances left");
 				System.out.println("Completion time: " + (timeElapsed/1000000000));
 				win = true;
+				Scanner scanner = new Scanner(System.in);
+				System.out.println("Enter player name:");
+				Score newScore = new Score(scanner.nextLine(), (timeElapsed/1000000000), chancesLeft, isHard);
+				if(isHard) {
+					hard.addScore(newScore);
+					hsIOHard.exportScores(hard);
+					
+				}else {
+					easy.addScore(newScore);
+					hsIOEasy.exportScores(easy);
+					
+				}
+				
+				
+				System.out.println("High scores (easy):");
+				easy.printScores();
+				System.out.println("High scores (hard):");
+				hard.printScores();
 				break;
 			}
 		}
 		if (!win) {
 			System.out.println("Better luck next time");
+			System.out.println("High scores (easy):");
+			easy.printScores();
+			System.out.println("High scores (hard):");
+			hard.printScores();
 		}
 
 	}
 
 	private void spamConsole() {
-		for (int i = 0; i <= 15; i++) {
+		for (int i = 0; i <= 50; i++) {
 			System.out.println("");
 		}
 
